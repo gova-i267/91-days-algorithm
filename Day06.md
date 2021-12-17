@@ -1,64 +1,45 @@
 ## 题目：
-https://leetcode-cn.com/problems/implement-queue-using-stacks/
+https://leetcode-cn.com/problems/max-chunks-to-make-sorted-ii/
 
 ## 思路：
 - 前提：
-1. in 栈只存push的数据
-2. out 是 peek 和 pop 的栈
+1. clone 是 arr 已经排好序的数组
+2. arr 是原始数组
 - 做法：
-1. push 时，直接存 in 栈
-2. pop 和 peek 时需要判断 out 栈是否为空，如果为空，则把 in 栈的数据 pop 后再 push 进 out 栈中(栈是后进先出，经过两次压栈后就变成了先进先出)，在 out 栈中 peek 和 pop
-3. isEmpty 需要同时判断 in 和 out 栈是否为空
+1. 利用 count 记录当前的数字平衡
+2. 把 arr 中的数字往 map 中加，并且 count++;
+3. 把 clone 中的数字往 map 中取，并且 count--;
+4. 当 count == 0 时，代表平衡，可以构成排序块；
+
 
 ## Java 代码
 ```java
-class MyQueue {
-    Stack<Integer> in;
-    Stack<Integer> out;
-    public MyQueue() {
-        in = new Stack<>();
-        out = new Stack<>();
-    }
-    
-    public void push(int x) {
-        in.push(x);
-    }
-    
-    public int pop() {
-        if (out.isEmpty()) {
-            int n = in.size();
-            for (int i=0;i<n;i++) {
-                out.push(in.pop());
-            }
+class Solution {
+    public int maxChunksToSorted(int[] arr) {
+        int n = arr.length;
+        int[] clone = arr.clone();
+        Arrays.sort(clone);
+        Map<Integer,Integer> map = new HashMap<>();
+        int count = 0, sum = 0;
+        for (int i=0;i<n;i++) 
+        {
+            int ar = arr[i], cl = clone[i];
+            map.put(ar, map.getOrDefault(ar,0)+1);
+            if (map.get(ar) == 0) count--;
+            if (map.get(ar) == 1) count++;
+
+            map.put(cl, map.getOrDefault(cl,0)-1);
+            if (map.get(cl) == -1) count++;
+            if (map.get(cl) == 0) count--;
+
+            if (count == 0) sum++;
         }
-        return out.pop();
-    }
-    
-    public int peek() {
-        if (out.isEmpty()) {
-            int n = in.size();
-            for (int i=0;i<n;i++) {
-                out.push(in.pop());
-            }
-        }
-        return out.peek();
-    }
-    
-    public boolean empty() {
-        return in.isEmpty() && out.isEmpty();
+        
+        return sum;
     }
 }
-
-/**
- * Your MyQueue object will be instantiated and called as such:
- * MyQueue obj = new MyQueue();
- * obj.push(x);
- * int param_2 = obj.pop();
- * int param_3 = obj.peek();
- * boolean param_4 = obj.empty();
- */
 ```
 
 ## 复杂度分析：
-- 时间复杂度：O(n) 一次遍历
-- 空间复杂度：O(n) 两个栈辅助存储
+- 时间复杂度：O(n*log(n)) 排序
+- 空间复杂度：O(n) 数组+map
