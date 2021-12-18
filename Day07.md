@@ -31,7 +31,7 @@ class Solution {
                 n++;
         }
         n = k % n ;
-        for (int i=0;i<res;i++){
+        for (int i=0;i<n;i++){
             while (last.next!=null){
                 pre = last;
                 last = last.next;
