@@ -24,13 +24,13 @@ class Solution {
         if (head == null || head.next == null) return head;
         ListNode last = head;
         ListNode pre = null;
-        int res = 1;
+        int n = 1;
         while (last.next!=null){
                 pre = last;
                 last = last.next;
-                res++;
+                n++;
         }
-        res = k % res ;
+        n = k % n ;
         for (int i=0;i<res;i++){
             while (last.next!=null){
                 pre = last;
